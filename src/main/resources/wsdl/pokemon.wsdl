@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<wsdl:definitions
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://testmanuel.com"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	targetNamespace="http://testmanuel.com">
+
+	<wsdl:types>
+		<xs:schema targetNamespace="http://testmanuel.com">
+			<xs:element name="pokemonRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element type="xs:string" name="name" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="pokemonResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element type="xs:int" name="id" />
+						<xs:element type="xs:string" name="name" />
+						<xs:element type="xs:int" name="base_experience" />
+						<xs:element name="abilities"
+							type="tns:arrayAbilitiesResponse" />
+						<xs:element name="local_area_enconters"
+							type="xs:string" />
+						<xs:element name="held_items"
+							type="tns:arrayHeldItemResponse" />	
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:complexType name="arrayAbilitiesResponse">
+				<xs:sequence>
+					<xs:element minOccurs="0" maxOccurs="unbounded"
+						name="abilitie" type="tns:abilitiesResponse" />
+				</xs:sequence>
+			</xs:complexType>
+
+
+			<xs:complexType name="abilitiesResponse">
+				<xs:sequence>
+					<xs:element type="xs:string" name="name" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="arrayHeldItemResponse">
+				<xs:sequence>
+					<xs:element minOccurs="0" maxOccurs="unbounded"
+						name="held_items" type="tns:heldItemResponse" />
+				</xs:sequence>
+			</xs:complexType>
+
+
+			<xs:complexType name="heldItemResponse">
+				<xs:sequence>
+					<xs:element type="xs:string" name="name" />
+				</xs:sequence>
+			</xs:complexType>
+
+		</xs:schema>
+	</wsdl:types>
+
+
+	<!--Define input and output parameters -->
+	<wsdl:message name="pokemonRequest">
+		<wsdl:part name="in" element="tns:pokemonRequest" />
+	</wsdl:message>
+	<wsdl:message name="pokemonResponse">
+		<wsdl:part name="out" element="tns:pokemonResponse" />
+	</wsdl:message>
+
+	<!--Define port definition -->
+	<wsdl:portType name="SOATestEndpoint">
+		<wsdl:operation name="SOATest">
+			<wsdl:input message="tns:pokemonRequest" />
+			<wsdl:output message="tns:pokemonResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<!--Bind Soap operation and service -->
+	<wsdl:binding name="SOATestBinding"
+		type="tns:SOATestEndpoint">
+		<soap:binding
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="SOATest">
+			<soap:operation soapAction="http://testmanuel.com"
+				style="document" />
+			<wsdl:input>
+				<soap:body parts="in" use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body parts="out" use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<!--Define service -->
+	<wsdl:service name="SOATestEndpointService">
+		<wsdl:port name="SOATestEndpoint"
+			binding="tns:SOATestBinding">
+			<soap:address
+				location="http://localhost:8080/ws/pokemon" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
